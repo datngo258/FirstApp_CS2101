@@ -37,8 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'courses.apps.CoursesConfig'
+    'courses.apps.CoursesConfig',
+    'ckeditor',
+    'ckeditor_uploader',
+    'debug_toolbar'
 ]
+CKEDITOR_UPLOAD_PATH = 'ckeditor/images/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,7 +89,14 @@ DATABASES = {
         'PORT': '3306',
     }
 }
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 
+# MEDIA_ROOT = '%s/courses/static/' + BASE_DIR
+MEDIA_ROOT = str(BASE_DIR) + '/courses/static/'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
