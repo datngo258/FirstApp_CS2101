@@ -4,6 +4,24 @@ from django.utils.html import  mark_safe
 from .models import Category, Course, Lesson , Tag
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
+from django.urls import path
+from django.template.response import TemplateResponse
+from . import dao  # Dấu chấm (.) để import module trong cùng thư mục
+
+class CourseAppAdminSite (admin.AdminSite):
+    site_header = 'He Thong Khoa Hoc Truc Tiep!'
+
+    def get_urls(self):
+        return [
+            path('course-stats/', self.stats_view, name='course_stats')
+        ] + super().get_urls()
+
+    def stats_view(self, request):
+        return TemplateResponse(request, 'admin/stats_view.html', {
+            'stats' : dao.count_courses_by_cate()
+        })
+
+admin_site = CourseAppAdminSite(name='myapp')
 
 class CateAdmin (admin.ModelAdmin):
     list_display = ['pk','name']
@@ -30,7 +48,7 @@ class CourseAdmin (admin.ModelAdmin):
         }
 
 
-admin.site.register(Category, CateAdmin)
-admin.site.register(Course,CourseAdmin)
-admin.site.register(Lesson)
-admin.site.register(Tag)
+admin_site.register(Category, CateAdmin)
+admin_site.register(Course,CourseAdmin)
+admin_site.register(Lesson)
+admin_site.register(Tag)

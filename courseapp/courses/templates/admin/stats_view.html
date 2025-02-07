@@ -1,0 +1,66 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<h1>Thống Kê Khóa Học Trực Tuyến</h1>
+
+{% if stats %}
+<ul>
+    {% for c in stats %}
+    <li>
+        <strong>{{ c.name }}</strong>: {{ c.count }}
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Import Chart.js từ CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Hiển thị biểu đồ -->
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+
+<script>
+    window.onload = () => {
+        const ctx = document.getElementById('myChart');
+
+        // Khai báo mảng chứa dữ liệu
+        let labels = [];
+        let values = [];
+
+        // Lặp qua dữ liệu Django và thêm vào mảng
+        {% for c in stats %}
+            values.push({{ c.count }});  // Giá trị số không cần dấu nháy
+            labels.push("{{ c.name }}"); // Bọc trong dấu nháy để tránh lỗi JavaScript
+        {% endfor %}
+
+        // Tạo biểu đồ bằng Chart.js
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Số lượng khóa học',
+                    data: values,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',  // Màu cột
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    };
+</script>
+
+{% else %}
+<p>Không có dữ liệu thống kê.</p>
+{% endif %}
+
+{% endblock %}
