@@ -19,7 +19,7 @@ class Category ( BaseModel):
     def __str__(self):
         return self.name
 
-class Course (models.Model ):
+class Course (BaseModel ):
     subject = models.CharField(max_length=255,null =False)
     description = RichTextField()
     image = models.ImageField(upload_to='courses/%Y/%m' )
