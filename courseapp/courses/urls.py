@@ -9,7 +9,7 @@ from . import views
 
 routers = routers.DefaultRouter()
 routers.register('categories', views.CategoryViewSet , basename='categories' )
-routers.register('courses', views.CategoryViewSet , basename='courses' )
+routers.register('courses', views.CourseViewSet , basename='courses' )
 urlpatterns = [
     path('',include(routers.urls)),
 ]
