@@ -12,6 +12,7 @@ routers.register('categories', views.CategoryViewSet , basename='categories' )
 routers.register('courses', views.CourseViewSet , basename='courses' )
 routers.register('lessons', views.LessonViewSet , basename='lessons' )
 routers.register('users', views.UserViewSet , basename='users' )
+routers.register('comments', views.CommentViewSet , basename='commments' )
 
 urlpatterns = [
     path('',include(routers.urls)),

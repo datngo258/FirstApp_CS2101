@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import  mark_safe
 # Register your models here.
-from .models import Category, Course, Lesson , Tag
+from .models import Category, Course, Lesson , Tag, Comment
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django import forms
 from django.urls import path
@@ -51,4 +51,5 @@ class CourseAdmin (admin.ModelAdmin):
 admin_site.register(Category, CateAdmin)
 admin_site.register(Course,CourseAdmin)
 admin_site.register(Lesson)
-admin_site.register(Tag)
+admin_site.register(Comment)
+

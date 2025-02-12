@@ -1,4 +1,4 @@
-from .models import Category, Course, Lesson, User
+from .models import Category, Course, Lesson, User, Comment
 from rest_framework import  serializers
 class CategorySerializer(serializers.ModelSerializer):
     class Meta :
@@ -42,4 +42,11 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(data['password'])
         user.save()
         return user
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    class Meta:
+        model = Comment
+        fields = ['id','content','user']
+
 
