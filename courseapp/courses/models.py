@@ -55,10 +55,10 @@ class InterFaction(BaseModel):
     class Meta:
         abstract = True
 class Comment(InterFaction):
-    content = models.CharField(max_length=255,null=False)
+            content = models.CharField(max_length=255,null=False)
 class Like(InterFaction):
     active = models.BooleanField(default=True)
     class Meta:
-        unique_together = ('User','lesson')
+        unique_together = ('user', 'lesson')
 class Rating(InterFaction):
     rate = models.SmallIntegerField(default=0)

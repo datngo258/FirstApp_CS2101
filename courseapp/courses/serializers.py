@@ -26,7 +26,16 @@ class LessonSerializer(BaseSerializer):  # Đổi từ lesssonSerializer thành 
     class Meta:
         model = Lesson
         fields = ['id', 'subject', 'image', 'tags']
+class LessonDetailSerializer(LessonSerializer):
+    liked = serializers.SerializerMethodField()
+    def get_liked(self, lesson ):
+        request = self.context.get('request')
+        if request.user.is_authenticated :
+            return lesson.like_set.filter(active=True).exists()
 
+    class Meta :
+        model = LessonSerializer.Meta.model
+        fields = LessonSerializer.Meta.fields + ['liked']
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

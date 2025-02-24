@@ -33,9 +33,8 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView):
 
 class LessonViewSet (viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Lesson.objects.filter(active=True).all()
-    serializer_class = serializers.LessonSerializer
-    permission_classes = [permissions.AllowAny]
-
+    serializer_class = serializers.LessonDetailSerializer
+    permission_classes = [permissions.AllowAny()]
     def get_permissions(self):
             if self.action in ['add_comment','like']:
                 return [permissions.IsAuthenticated()]
@@ -47,37 +46,26 @@ class LessonViewSet (viewsets.ViewSet, generics.RetrieveAPIView):
         return Response(serializers.CommentSerializer(c).data,status = status.HTTP_201_CREATED)
     @action(methods=['post'], url_path="like", detail=True )
     def like (self, request, pk):
-        like, created =Like.objects.create_or_update(user=request.user, lesson = self.get_object())
+        like, created =Like.objects.get_or_create(user=request.user, lesson = self.get_object())
         if not created :
             like.active = not like.active
             like.save()
-        return Response(status=status.HTTP_200_OK)
+        return Response(serializers.LessonDetailSerializer(self.get_object(),context={'request' : request}).data
+            ,status=status.HTTP_200_OK)
 class CommentViewSet(viewsets.ViewSet,generics.DestroyAPIView, generics.UpdateAPIView):
     queryset = Comment.objects.all()
     serializer_class = serializers.CommentSerializer
     permission_classes = [perms.OwnerAuthenticated]
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
-    queryset = User.objects.filter(is_active=True).all()
+    queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
-    parser_classes = [parsers.MultiPartParser]
 
     def get_permissions(self):
-        if self.action.__eq__('current_user'):
+        if self.action in ['get_current_user']:
             return [permissions.IsAuthenticated()]
+
         return [permissions.AllowAny()]
-    @action(methods=['get'], url_name='current-user', detail=False )
-    def current_user (self, request ):
+
+    @action(methods=['get'], url_path='current-user', detail=False)
+    def get_current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
-# class UserViewSet(viewsets.GenericViewSet, generics.CreateAPIView):
-#     queryset = User.objects.filter(is_active=True)
-#     serializer_class = serializers.UserSerializer
-#     parser_classes = [parsers.MultiPartParser]
-#
-#     def get_permissions(self):
-#         if self.action == 'current_user':  # Sửa __eq__('current_user')
-#             return [permissions.IsAuthenticated()]
-#         return [permissions.AllowAny()]
-#
-#     @action(methods=['get'], detail=False, name='current-user')
-#     def current_user(self, request):
-#         return Response(serializers.UserSerializer(request.user).data)
